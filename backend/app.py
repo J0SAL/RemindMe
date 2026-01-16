@@ -5,6 +5,7 @@ import os
 import requests
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
+from utils.ai_model import parse_intent_with_ai
 
 load_dotenv()
 
@@ -26,7 +27,14 @@ def webhook():
         chat_id = data["message"]["chat"]["id"]
         text = data["message"].get("text", "")
 
-        send_message(chat_id, f"You Said: {text}")
+        ai_result = parse_intent_with_ai(text)
+        if ai_result:
+            response = ai_result.get("reply", "Got it!")
+            send_message(chat_id, response)
+            # TODO: DB + reminder scheduling logic goes here
+            print(f"To Schedule: {ai_result.get('task')} at {ai_result.get('trigger_time')}")
+        else:
+            send_message(chat_id, "Sorry, I couldn't understand that.")
 
     return jsonify({"status": "success"}), 200
 
