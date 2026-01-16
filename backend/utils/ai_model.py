@@ -28,7 +28,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", """Parse the following user message into a JSON reminder format.
     
     Return ONLY JSON:
-    - status: "COMPLETE" or "MISSING_TIME"
+    - status: "COMPLETE" or "MISSING_TIME" or "MISSING_TASK"
     - task: The thing to do.
     - trigger_time: ISO timestamp (YYYY-MM-DD HH:MM:SS)
     - reply: A brief confirmation or a clarifying question.
