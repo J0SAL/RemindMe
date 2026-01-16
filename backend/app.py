@@ -25,9 +25,10 @@ def webhook():
     
     if "message" in data:
         chat_id = data["message"]["chat"]["id"]
+        user_id = data["message"]["from"]["id"]
         text = data["message"].get("text", "")
 
-        ai_result = parse_intent_with_ai(text)
+        ai_result = parse_intent_with_ai(user_id, text)
         if ai_result:
             response = ai_result.get("reply", "Got it!")
             send_message(chat_id, response)
