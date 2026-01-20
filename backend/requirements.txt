@@ -3,3 +3,5 @@ requests
 python-dotenv
 langchain-google-genai
 langchain-community
+Flask-SQLAlchemy 
+psycopg2-binary
