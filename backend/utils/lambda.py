@@ -24,7 +24,12 @@ def lambda_handler(event, context):
     db = get_db_connection()
     
     # Get reminders where trigger_time is now or in the past, and processed is false
-    query = "SELECT id, user_id, task FROM reminders WHERE trigger_time <= NOW() AND processed = false"
+    query = """
+        SELECT id, user_id, task
+        FROM reminders
+        WHERE trigger_time <= (NOW() AT TIME ZONE 'Asia/Kolkata')
+        AND processed = false;
+    """
     
     for row in db.run(query):
         rem_id, user_id, task = row
