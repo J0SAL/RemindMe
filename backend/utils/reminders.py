@@ -9,7 +9,7 @@ def save_reminder(chat_id, user_id, ai_result):
     reminder = Reminder(
         user_id=str(user_id),
         chat_id=str(chat_id),
-        status=ai_result.get("status", "MISSING_TASK"),
+        status=ai_result.get("status", "COMPLETE"),
         task=ai_result.get("task"),
         trigger_time=trigger_dt,
         reply=ai_result.get("reply")
