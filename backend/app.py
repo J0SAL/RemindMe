@@ -1,6 +1,3 @@
-"""
-This module provides the backend application for a Telegram bot.
-"""
 import os
 from dotenv import load_dotenv
 
@@ -8,16 +5,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, request, jsonify
-from services.ai import parse_intent_with_ai
-from services.reminders import save_reminder
+from redis import Redis
+from rq import Queue
 from services.database import db
 from services.telegram import send_message, set_webhook
+from services.processor import process_message
 
 app = Flask(__name__)
 DATABASE_URL = os.getenv("POSTGRES_DB_URL")
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Setup Redis Queue
+conn = Redis.from_url(REDIS_URL)
+q = Queue(connection=conn)
 
 db.init_app(app)
 with app.app_context():
@@ -38,20 +41,10 @@ def webhook():
         user_id = data["message"]["from"]["id"]
         text = data["message"].get("text", "")
 
-        ai_result = parse_intent_with_ai(user_id, text)
-        print(f"AI Result: {ai_result}")
-        if ai_result:
-            response = ai_result.get("reply", "Got it!")
-            send_message(chat_id, response)
+        print(f"Enqueuing message from {user_id}")
+        q.enqueue(process_message, chat_id, user_id, text)
 
-            if ai_result.get("status") == "COMPLETE":
-                save_reminder(chat_id, user_id, ai_result)
-            
-            print(f"To Schedule: {ai_result.get('task')} at {ai_result.get('trigger_time')}")
-        else:
-            send_message(chat_id, "Sorry, I couldn't understand that.")
-
-    return jsonify({"status": "success"}), 200
+    return jsonify({"status": "queued"}), 200
 
 if __name__ == "__main__":
     """
