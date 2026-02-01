@@ -4,3 +4,20 @@ services:
     ports:
       - "6379:6379"
     restart: always
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: remindme-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: remindme
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  postgres_data:

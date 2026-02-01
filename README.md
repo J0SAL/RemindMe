@@ -58,14 +58,14 @@ Create a `.env` file in the `backend/` directory:
 ```bash
 TELEGRAM_BOT_TOKEN=your_token
 GEMINI_API_KEY=your_key
-POSTGRES_DB_URL=postgresql://user:pass@host:5432/db?sslmode=require
+POSTGRES_DB_URL=postgresql://postgres:password@localhost:5432/remindme
 REDIS_URL=redis://localhost:6379
 DEV_URL=https://your-ngrok-url.ngrok-free.app
 ```
 
-### 2. Infrastructure (Redis)
+### 2. Infrastructure
 
-Start the Redis container:
+Start the Redis and PostgreSQL containers:
 ```bash
 docker compose up -d
 ```
@@ -100,7 +100,8 @@ This project initially used a serverless architecture with **AWS Lambda** (for t
 
 While we migrated to a containerized `worker` and `scheduler` for portability, the original cloud-native code is preserved in the `aws/` directory for reference. It demonstrates how to implement:
 -   **AWS Lambda**: Serverless execution of Python logic.
--   **EventBridge**: Cron-style triggers in the cloud.
+-   **Amazon EventBridge**: Cron-style triggers in the cloud.
+-   **AWS RDS**: Managed PostgreSQL database for cloud persistence.
 
 ## 🛠️ Tech Stack Details
 
@@ -110,5 +111,5 @@ While we migrated to a containerized `worker` and `scheduler` for portability, t
 | **Orchestration** | LangChain | AI Logic & Prompt Management |
 | **Backend** | Flask | Lightweight Webhook handler |
 | **Queue** | Redis + RQ | Async task management |
-| **Database** | PostgreSQL (AWS RDS) | Persistent storage |
+| **Database** | PostgreSQL (Docker) | Persistent storage |
 | **Scheduler** | Python Schedule | Periodic checks (Cron replacement) |
