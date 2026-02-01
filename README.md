@@ -21,18 +21,16 @@ graph TD
     Telegram -->|Webhook| Ngrok[Ngrok Tunnel]
     Ngrok -->|POST /webhook| WebApp[Flask Web App]
     
-    subgraph "Local / Cloud Infrastructure"
-        WebApp -->|Enqueue Task| Redis[(Redis Queue)]
-        WebApp -->|Save/Read| DB[(PostgreSQL)]
-        
-        Worker[RQ Worker] -->|Dequeue Task| Redis
-        Worker -->|Process NLU| Gemini[Google Gemini AI]
-        Worker -->|Save Reminder| DB
-        Worker -->|Send Reply| Telegram
-        
-        Scheduler[Scheduler Service] -->|Check Every 60s| DB
-        Scheduler -->|Send Due Reminders| Telegram
-    end
+    WebApp -->|Enqueue Task| Redis[(Redis Queue)]
+    WebApp -->|Save/Read| DB[(PostgreSQL)]
+    
+    Worker[RQ Worker] -->|Dequeue Task| Redis
+    Worker -->|Process NLU| Gemini[Google Gemini AI]
+    Worker -->|Save Reminder| DB
+    Worker -->|Send Reply| Telegram
+    
+    Scheduler[Scheduler Service] -->|Check Every 60s| DB
+    Scheduler -->|Send Due Reminders| Telegram
 ```
 
 ## ✨ Features
