@@ -16,21 +16,16 @@
 RemindMe uses a modern **Event-Driven Architecture** to ensure responsiveness and reliability. It is fully containerized and uses a split-service design.
 
 ```mermaid
-graph TD
-    User((User)) -->|Message| Telegram[Telegram Bot API]
-    Telegram -->|Webhook| Ngrok[Ngrok Tunnel]
-    Ngrok -->|POST /webhook| WebApp[Flask Web App]
+graph LR
+    User -->|Message| Telegram
+    Telegram -->|Webhook| Server[Flask Server]
+    Server -->|Enqueue| Queue[(Redis Queue)]
     
-    WebApp -->|Enqueue Task| Redis[(Redis Queue)]
-    WebApp -->|Save/Read| DB[(PostgreSQL)]
+    Queue -->|Process| Worker[AI Worker]
+    Worker -->|Reply| Telegram
     
-    Worker[RQ Worker] -->|Dequeue Task| Redis
-    Worker -->|Process NLU| Gemini[Google Gemini AI]
-    Worker -->|Save Reminder| DB
-    Worker -->|Send Reply| Telegram
-    
-    Scheduler[Scheduler Service] -->|Check Every 60s| DB
-    Scheduler -->|Send Due Reminders| Telegram
+    Scheduler[Scheduler] -->|Trigger| DB[(Database)]
+    DB -->|Reminder| Telegram
 ```
 
 ## ✨ Features
