@@ -1,4 +1,4 @@
-from utils.models import Reminder, db
+from services.database import Reminder, db
 from datetime import datetime
 
 def save_reminder(chat_id, user_id, ai_result):
