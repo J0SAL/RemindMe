@@ -38,7 +38,13 @@ graph LR
 
 ---
 
-## 🚀 Getting Started
+## 📹 Demo
+
+<img width="300" alt="RemindMe Demo" src="https://github.com/user-attachments/assets/451764ff-b629-4662-a097-758570bbcc21" />
+
+---
+
+## �🚀 Getting Started
 
 ### Prerequisites
 
